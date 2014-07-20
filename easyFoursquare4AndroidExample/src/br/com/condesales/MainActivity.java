@@ -1,8 +1,12 @@
 package br.com.condesales;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,23 +31,57 @@ import br.com.condesales.models.Venue;
 import br.com.condesales.tasks.users.UserImageRequest;
 
 public class MainActivity extends Activity implements
-        AccessTokenRequestListener, ImageRequestListener {
+        AccessTokenRequestListener, ImageRequestListener, LocationListener {
 
     private EasyFoursquareAsync async;
     private ImageView userImage;
     private ViewSwitcher viewSwitcher;
     private TextView userName;
-
+    private LocationManager locationManager;
+ 
+    @Override
+    
+    public void onStart() {
+     
+     super.onStart();
+     
+     locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, // プロバイダ
+     0, // 通知のための最小時間間隔
+     0, // 通知のための最小距離間隔
+     this); // 位置情報リスナー
+    }
+     
+    @Override
+     
+    public void onStop() {
+     
+    super.onStop();
+     locationManager.removeUpdates(this);
+     
+    }
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        userImage = (ImageView) findViewById(R.id.imageView1);
-        viewSwitcher = (ViewSwitcher) findViewById(R.id.viewSwitcher1);
+//        userImage = (ImageView) findViewById(R.id.imageView1);
+//        viewSwitcher = (ViewSwitcher) findViewById(R.id.viewSwitcher1);
         userName = (TextView) findViewById(R.id.textView1);
         //ask for access
         async = new EasyFoursquareAsync(this);
         async.requestAccess(this);
+        
+       LocationManager mLocationManager =
+            (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+       Criteria criteria = new Criteria();
+       criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+       criteria.setPowerRequirement(Criteria.POWER_LOW);
+       String provider = mLocationManager.getBestProvider(criteria, true);
+
+
+    
     }
 
 
@@ -57,34 +95,34 @@ public class MainActivity extends Activity implements
     public void onAccessGrant(String accessToken) {
         // with the access token you can perform any request to foursquare.
         // example:
-        async.getUserInfo(new UserInfoRequestListener() {
-
-            @Override
-            public void onError(String errorMsg) {
-                // Some error getting user info
-                Toast.makeText(MainActivity.this, errorMsg, Toast.LENGTH_LONG)
-                        .show();
-            }
-
-            @Override
-            public void onUserInfoFetched(User user) {
-                // OWww. did i already got user!?
-                if (user.getBitmapPhoto() == null) {
-                    UserImageRequest request = new UserImageRequest(
-                            MainActivity.this, MainActivity.this);
-                    request.execute(user.getPhoto());
-                } else {
-                    userImage.setImageBitmap(user.getBitmapPhoto());
-                }
-                userName.setText(user.getFirstName() + " " + user.getLastName());
-                viewSwitcher.showNext();
-                Toast.makeText(MainActivity.this, "Got it!", Toast.LENGTH_LONG)
-                        .show();
-            }
-        });
+//        async.getUserInfo(new UserInfoRequestListener() {
+//
+//            @Override
+//            public void onError(String errorMsg) {
+//                // Some error getting user info
+//                Toast.makeText(MainActivity.this, errorMsg, Toast.LENGTH_LONG)
+//                        .show();
+//            }
+//
+////            @Override
+////            public void onUserInfoFetched(User user) {
+////                // OWww. did i already got user!?
+////                if (user.getBitmapPhoto() == null) {
+////                    UserImageRequest request = new UserImageRequest(
+////                            MainActivity.this, MainActivity.this);
+////                    request.execute(user.getPhoto());
+////                } else {
+////                    userImage.setImageBitmap(user.getBitmapPhoto());
+////                }
+////                userName.setText(user.getFirstName() + " " + user.getLastName());
+////                viewSwitcher.showNext();
+////                Toast.makeText(MainActivity.this, "Got it!", Toast.LENGTH_LONG)
+////                        .show();
+////            }
+//        });
 
         
-        requestVenuesNearby();
+        //requestVenuesNearby();
         
         //for another examples uncomment lines below:
         //requestTipsNearby();
@@ -97,12 +135,21 @@ public class MainActivity extends Activity implements
     }
     
     private void requestVenuesNearby(){
-        Location loc = new Location("");
-        loc.setLatitude(36.11);
-        loc.setLongitude(140.10);
+        Location loc = null;
+        loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        
+//        loc.setLatitude(36.11);
+//        loc.setLongitude(140.10);
 
         VenuesCriteria criteria = new VenuesCriteria();
 
+        if(loc == null){
+        	loc = new Location("");
+          loc.setLatitude(36.3418112);
+          loc.setLongitude(140.4467935);
+      	
+        }
+        
         criteria.setLocation(loc);
         criteria.setQuantity(50);
    
@@ -121,7 +168,7 @@ public class MainActivity extends Activity implements
 				TextView text = (TextView)findViewById(R.id.venue);
 				String str = "";
 				for(Venue v: venues){
-					str += v.getName()+ ",";
+					str += v.getName()+ ",\n";
 				}
 				text.setText(str);
 			
@@ -170,6 +217,41 @@ public class MainActivity extends Activity implements
             }
         }, criteria);
     }
+
+
+	@Override
+	public void onLocationChanged(Location location) {
+		// TODO Auto-generated method stub
+//        TextView tv_lat = (TextView) findViewById(R.id.Latitude);
+//        tv_lat.setText("Latitude:"+location.getLatitude());
+//        TextView tv_lng = (TextView) findViewById(R.id.Longitude);
+//        tv_lng.setText("Longitude:"+location.getLongitude());
+//		
+        requestVenuesNearby();
+        locationManager.removeUpdates(this);
+
+	}
+
+
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void onProviderEnabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void onProviderDisabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
 
 
 }
