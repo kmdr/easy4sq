@@ -151,7 +151,7 @@ public class MainActivity extends Activity implements
         }
         
         criteria.setLocation(loc);
-        criteria.setQuantity(50);
+        criteria.setQuantity(10);
    
         async.getVenuesNearby(new FoursquareVenuesRequestListener() {
 			
@@ -168,7 +168,7 @@ public class MainActivity extends Activity implements
 				TextView text = (TextView)findViewById(R.id.venue);
 				String str = "";
 				for(Venue v: venues){
-					str += v.getName()+ ",\n";
+					str += v.getName()+ "　（ここから"+ v.getLocation().getDistance() + "m）\n\n";
 				}
 				text.setText(str);
 			

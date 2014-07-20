@@ -2,9 +2,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="#fff6ee" >
 
- <!--    <ViewSwitcher
+    <!--
+    <ViewSwitcher
         android:id="@+id/viewSwitcher1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" >
@@ -23,7 +25,7 @@
             android:contentDescription="User image"
             android:src="@drawable/ic_launcher" />
     </ViewSwitcher>
- -->
+    -->
 
     <TextView
         android:id="@+id/textView1"
@@ -32,10 +34,11 @@
 
     <TextView
         android:id="@+id/venue"
-        android:layout_width="match_parent"
-        android:layout_height="346dp"
+        android:layout_width="fill_parent"
+        android:layout_height="500dp"
         android:scrollbars="vertical"
         android:singleLine="false"
-        android:text="TextView" />
+        android:text="TextView"
+        android:textSize="@dimen/padding_large" />
 
 </LinearLayout>
