@@ -8,12 +8,16 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import br.com.condesales.criterias.CheckInCriteria;
 import br.com.condesales.criterias.TipsCriteria;
@@ -31,7 +35,7 @@ import br.com.condesales.models.Venue;
 import br.com.condesales.tasks.users.UserImageRequest;
 
 public class MainActivity extends Activity implements
-        AccessTokenRequestListener, ImageRequestListener, LocationListener {
+        AccessTokenRequestListener, ImageRequestListener, LocationListener ,OnClickListener{
 
     private EasyFoursquareAsync async;
     private ImageView userImage;
@@ -67,7 +71,7 @@ public class MainActivity extends Activity implements
         setContentView(R.layout.activity_main);
 //        userImage = (ImageView) findViewById(R.id.imageView1);
 //        viewSwitcher = (ViewSwitcher) findViewById(R.id.viewSwitcher1);
-        userName = (TextView) findViewById(R.id.textView1);
+//        userName = (TextView) findViewById(R.id.textView1);
         //ask for access
         async = new EasyFoursquareAsync(this);
         async.requestAccess(this);
@@ -80,7 +84,8 @@ public class MainActivity extends Activity implements
        criteria.setPowerRequirement(Criteria.POWER_LOW);
        String provider = mLocationManager.getBestProvider(criteria, true);
 
-
+       ImageButton iybtn=(ImageButton)findViewById(R.id.iyadabtn);
+       iybtn.setOnClickListener(this);
     
     }
 
@@ -167,16 +172,26 @@ public class MainActivity extends Activity implements
 				// TODO Auto-generated method stub
 				TextView text = (TextView)findViewById(R.id.venue);
 				String str = "";
-				for(Venue v: venues){
-					str += v.getName()+ "　（ここから"+ v.getLocation().getDistance() + "m）\n\n";
-				}
-				text.setText(str);
+//				for(Venue v: venues){
+//					str += v.getName() + "（ここから"+ v.getLocation().getDistance() + "m）\n";
+//				}
+//				text.setText(str);
+				Random rand=new Random();
+				text.setText(venues.get(rand.nextInt(10)).getName());
 			
 			}
 		}, criteria);
         
     	
     }
+    
+    public void onClick(View v){
+		requestVenuesNearby();
+    	
+//    	TextView txt=(TextView)findViewById(R.id.venue);
+//    	txt.setText("Hello");
+    }
+    
     
     private void requestTipsNearby() {
         Location loc = new Location("");
@@ -227,9 +242,10 @@ public class MainActivity extends Activity implements
 //        TextView tv_lng = (TextView) findViewById(R.id.Longitude);
 //        tv_lng.setText("Longitude:"+location.getLongitude());
 //		
-        requestVenuesNearby();
         locationManager.removeUpdates(this);
-
+		requestVenuesNearby();
+//		TextView text = (TextView)findViewById(R.id.venue);
+//		text.setText("Hello");
 	}
 
 
