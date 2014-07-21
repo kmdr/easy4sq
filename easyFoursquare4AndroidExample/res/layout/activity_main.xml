@@ -1,9 +1,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#fff6ee"
     android:gravity="center"
-    android:orientation="vertical"
-    android:background="#fff6ee" >
+    android:orientation="vertical" >
 
     <!--
     <ViewSwitcher
@@ -27,12 +27,52 @@
     </ViewSwitcher>
     -->
 
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="50dp"
+        android:layout_weight="0.28" >
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="fill_parent"
+            android:layout_height="200dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/header_title" />
+
+    </RelativeLayout>
+
+    <RadioGroup android:id="@+id/radiogroup"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <RadioButton android:id="@+id/radiobutton_set"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="定食" />
+        <RadioButton android:id="@+id/radiobutton_rahmen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ラーメン" />
+        <RadioButton android:id="@+id/radiobutton_cafe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="カフェ" />
+        <RadioButton android:id="@+id/radiobutton_restaurant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="レストラン" />
+        </RadioGroup>
+    
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-<!--     <TextView
+    <!--
+         <TextView
         android:id="@+id/Latitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -43,20 +83,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView" />
- -->
+    -->
+
     <TextView
         android:id="@+id/venue"
         android:layout_width="fill_parent"
-        android:layout_height="161dp"
+        android:layout_height="66dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/padding_large"
+        android:layout_weight="0.50"
+        android:gravity="center"
         android:scrollbars="vertical"
         android:singleLine="false"
-        android:text="TextView"
-        android:textSize="@dimen/padding_large" />
+        android:text="ここになかなか表示されない場合は\nいやだボタンを押すか、\nちょっと歩いてみてください。"
+        android:textSize="40sp" />
 
-     <ImageButton
+    <ImageButton
         android:id="@+id/iyadabtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:background="@null"
         android:src="@drawable/iyada" />
 
 </LinearLayout>

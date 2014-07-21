@@ -11,7 +11,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
@@ -35,14 +38,17 @@ import br.com.condesales.models.Venue;
 import br.com.condesales.tasks.users.UserImageRequest;
 
 public class MainActivity extends Activity implements
-        AccessTokenRequestListener, ImageRequestListener, LocationListener ,OnClickListener{
+        AccessTokenRequestListener, ImageRequestListener, LocationListener ,OnClickListener, OnCheckedChangeListener{
 
     private EasyFoursquareAsync async;
     private ImageView userImage;
     private ViewSwitcher viewSwitcher;
     private TextView userName;
     private LocationManager locationManager;
- 
+    private String catid="4d4b7105d754a06374d81259";
+    private RadioGroup mRadioGroup;
+    private RadioButton set, rahmen, cafe, restaurant;
+    
     @Override
     
     public void onStart() {
@@ -69,6 +75,8 @@ public class MainActivity extends Activity implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        setTitle("食え、これを。");
 //        userImage = (ImageView) findViewById(R.id.imageView1);
 //        viewSwitcher = (ViewSwitcher) findViewById(R.id.viewSwitcher1);
 //        userName = (TextView) findViewById(R.id.textView1);
@@ -86,9 +94,29 @@ public class MainActivity extends Activity implements
 
        ImageButton iybtn=(ImageButton)findViewById(R.id.iyadabtn);
        iybtn.setOnClickListener(this);
-    
+   
+       mRadioGroup = (RadioGroup)findViewById(R.id.radiogroup);
+       mRadioGroup.setOnCheckedChangeListener(this);
+  
     }
-
+    
+    public void onCheckedChanged(RadioGroup group, int buttonId){
+        
+        set=(RadioButton)findViewById(R.id.radiobutton_set);
+        cafe=(RadioButton)findViewById(R.id.radiobutton_cafe);
+        rahmen=(RadioButton)findViewById(R.id.radiobutton_rahmen);
+        restaurant=(RadioButton)findViewById(R.id.radiobutton_restaurant);
+         
+        if(set.isChecked() == true) {
+        	catid = "4bf58dd8d48988d147941735";
+        }else if(cafe.isChecked() == true){
+        	catid = "4bf58dd8d48988d16d941735";
+        }else if(rahmen.isChecked() == true){
+        	catid = "4bf58dd8d48988d1d1941735";
+        }else{
+        	catid = "4bf58dd8d48988d1c4941735";
+        }
+    }
 
     @Override
     public void onError(String errorMsg) {
@@ -139,7 +167,7 @@ public class MainActivity extends Activity implements
         userImage.setImageBitmap(bmp);
     }
     
-    private void requestVenuesNearby(){
+    private void requestVenuesNearby(String categoryID){
         Location loc = null;
         loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         
@@ -150,13 +178,13 @@ public class MainActivity extends Activity implements
 
         if(loc == null){
         	loc = new Location("");
-          loc.setLatitude(36.3418112);
-          loc.setLongitude(140.4467935);
-      	
+        	loc.setLatitude(36.3418112);
+        	loc.setLongitude(140.4467935);
         }
         
         criteria.setLocation(loc);
         criteria.setQuantity(10);
+        criteria.setCategory(categoryID);
    
         async.getVenuesNearby(new FoursquareVenuesRequestListener() {
 			
@@ -177,7 +205,8 @@ public class MainActivity extends Activity implements
 //				}
 //				text.setText(str);
 				Random rand=new Random();
-				text.setText(venues.get(rand.nextInt(10)).getName());
+				int idx=rand.nextInt(venues.size());
+				text.setText(venues.get(idx).getName() + "\n（ここから"+ venues.get(idx).getLocation().getDistance() + "m）");
 			
 			}
 		}, criteria);
@@ -186,13 +215,13 @@ public class MainActivity extends Activity implements
     }
     
     public void onClick(View v){
-		requestVenuesNearby();
+		requestVenuesNearby(catid);
     	
 //    	TextView txt=(TextView)findViewById(R.id.venue);
 //    	txt.setText("Hello");
     }
     
-    
+   
     private void requestTipsNearby() {
         Location loc = new Location("");
         loc.setLatitude(40.4363483);
@@ -243,7 +272,7 @@ public class MainActivity extends Activity implements
 //        tv_lng.setText("Longitude:"+location.getLongitude());
 //		
         locationManager.removeUpdates(this);
-		requestVenuesNearby();
+		requestVenuesNearby("4d4b7105d754a06374d81259");
 //		TextView text = (TextView)findViewById(R.id.venue);
 //		text.setText("Hello");
 	}

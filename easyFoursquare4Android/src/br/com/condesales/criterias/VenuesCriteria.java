@@ -22,6 +22,7 @@ public class VenuesCriteria {
 	private String mQuery = "";
 	private int mRadius = 1000;
 	private int mQuantity = 10;
+	private String mCategory = "";
 	private Location mLocation = new Location(LocationManager.GPS_PROVIDER);
 	private VenuesCriteriaIntent intent = VenuesCriteriaIntent.CHECKIN;
 
@@ -35,6 +36,9 @@ public class VenuesCriteria {
 
 	public int getRadius() {
 		return mRadius;
+	}
+	public String getCategory(){
+		return mCategory;
 	}
 
 	public void setRadius(int mRadius) {
@@ -63,6 +67,10 @@ public class VenuesCriteria {
 
 	public void setIntent(VenuesCriteriaIntent intent) {
 		this.intent = intent;
+	}
+	
+	public void setCategory(String mCategory){
+		this.mCategory = mCategory;
 	}
 
 }
